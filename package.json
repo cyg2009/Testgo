@@ -1,0 +1,18 @@
+{
+  "name": "serverlessgo",
+  "version": "2.0.0",
+  "description": "serverless go function router image",
+  "main": "serverlessgo",
+  "scripts": {
+    "buildbinary": "go build  -a -o ./bin/serverlessgo ./cmd",
+    "buildimage": "docker build -t $npm_package_name:$npm_package_version .",
+    "tagimage": "docker tag $npm_package_name:$npm_package_version gcr.io/k8stest-167418/$npm_package_name:$npm_package_version",
+    "pushimage": "gcloud docker -- push gcr.io/k8stest-167418/$npm_package_name:$npm_package_version",
+    "buildall": "npm run buildbinary && npm run buildimage && npm run tagimage && npm run pushimage",
+    "start": "npm run buildbinary && RUNTIME_ROOT=$PWD ./bin/processrouter",
+    "info": "echo $npm_package_name $npm_package_version"
+  },
+  "author": "qiao yang",
+  "dependencies": {
+  }
+}

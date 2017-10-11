@@ -1,0 +1,19 @@
+
+{
+  "name": "gofunc1",
+  "version": "1.0.0",
+  "description": "Sample data only go function image",
+  "main": "plugin.go",
+  "scripts": {
+    "buildfunction": "go build --buildmode=plugin -o code/$npm_package_name.so.$npm_package_version  code/$npm_package_name.go ",
+    "buildimage": "docker build -t $npm_package_name:$npm_package_version .",
+    "tag": "docker tag $npm_package_name:$npm_package_version gcr.io/k8stest-167418/$npm_package_name:$npm_package_version",
+    "push": "gcloud docker -- push gcr.io/k8stest-167418/$npm_package_name:$npm_package_version",
+    "test": "npm run buildfunction && go test -v",
+    "build": "npm run buildfunction && npm run buildimage &&  npm run tag && npm run push",
+    "info": "echo $npm_package_name $npm_package_version"
+  },
+  "author": "qiao yang",
+  "dependencies": {
+  }
+}

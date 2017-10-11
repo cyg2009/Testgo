@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta1 
+kind: Deployment
+metadata:
+  name: serverlessgo-deployment
+  labels:
+    app: serverlessgo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: serverlessgo
+  template:
+    metadata:
+      labels:
+        app: serverlessgo
+    spec:
+      containers:
+      - name: serverlessgo
+        image: gcr.io/k8stest-167418/serverlessgo:2.0.0
+        command: ["/var/runtime/serverlessgo"]
+        ports:
+        - containerPort: 28903
+        volumeMounts:
+        - name: functions
+          mountPath: /var/runtime/func
+      volumes:
+      - name: functions
+        hostPath:
+          path: /functions
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: serverlessgo-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 28903
+  selector:
+    app: serverlessgo
+  type: LoadBalancer
+
+        

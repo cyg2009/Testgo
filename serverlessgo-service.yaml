@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: serverlessgo-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 28903
+  selector:
+    app: serverlessgo
+  type: LoadBalancer
