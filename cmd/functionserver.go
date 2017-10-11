@@ -1,4 +1,4 @@
-package prservice
+package main
 
 import (
     "net/http"  
@@ -6,7 +6,6 @@ import (
     "sync"
     "time"
     "fmt"
-    fm "serverlessgo/pkg/functionmanager"
 )
 
 func makeOKResponse(w http.ResponseWriter, body string){
@@ -35,12 +34,12 @@ func ServeHTTPInvoke(w http.ResponseWriter, req *http.Request) {
 
     functionId := req.Header.Get("function")
     if len(functionId) > 0 {        
-        if _, ok := fm.GetFunctionManager().GetFunction(functionId); ok == false {
+        if _, ok := GetFunctionManager().GetFunction(functionId); ok == false {
              makeFailedResponse(w, http.StatusBadRequest, "Function " + functionId + "  not exists!")
              return 
         }
                 
-        respData, _ := fm.GetFunctionManager().ExecuteFunction(functionId, evt)     
+        respData, _ := GetFunctionManager().ExecuteFunction(functionId, evt)     
         fmt.Println("invoke result:" + respData)
         makeOKResponse(w, respData)
         return
@@ -54,7 +53,7 @@ func ServeHTTPConfig(w http.ResponseWriter, req *http.Request) {
 }
 
 func ServeHTTPInfo(w http.ResponseWriter, req *http.Request) {
-    info := fm.GetFunctionManager().GetAllFunctionsJSON()
+    info := GetFunctionManager().GetAllFunctionsJSON()
     makeOKResponse(w, info)
 }
 func ServeHTTPHealthCheck(w http.ResponseWriter, req *http.Request) {
@@ -64,18 +63,18 @@ func ServeHTTPHealthCheck(w http.ResponseWriter, req *http.Request) {
 }
 
 // Singleton 
-var instance *http.ServeMux
-var once sync.Once
+var instanceHTTP *http.ServeMux
+var oncehttp sync.Once
 
 func GetPrserviceHttpHandler() (*http.ServeMux) {
 
-    once.Do( func() {
-        instance = http.NewServeMux()   
-        instance.HandleFunc("/health", ServeHTTPHealthCheck)
-        instance.HandleFunc("/config", ServeHTTPConfig)
-        instance.HandleFunc("/info", ServeHTTPInfo)
-        instance.HandleFunc("/invoke", ServeHTTPInvoke)
+    oncehttp.Do( func() {
+        instanceHTTP = http.NewServeMux()   
+        instanceHTTP.HandleFunc("/health", ServeHTTPHealthCheck)
+        instanceHTTP.HandleFunc("/config", ServeHTTPConfig)
+        instanceHTTP.HandleFunc("/info", ServeHTTPInfo)
+        instanceHTTP.HandleFunc("/invoke", ServeHTTPInvoke)
     })
 
-    return instance
+    return instanceHTTP
 }

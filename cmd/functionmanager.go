@@ -1,4 +1,4 @@
-package functiomanager
+package main
 
 import (
     "errors"
@@ -141,19 +141,19 @@ func (mgr *ServerlessFunctionManager) GetAllFunctionsJSON () (string){
 
 
 // Singleton 
-var instance *ServerlessFunctionManager
-var once sync.Once
+var instanceFM *ServerlessFunctionManager
+var oncefm sync.Once
 
 func GetFunctionManager() (*ServerlessFunctionManager) {
 
-    once.Do( func() {
+    oncefm.Do( func() {
        
-            instance = &ServerlessFunctionManager {
+            instanceFM = &ServerlessFunctionManager {
                 functionStore: make(map[string]*ServerlessFunction),
             }        
     })
 
-    return instance
+    return instanceFM
 }
 
 
