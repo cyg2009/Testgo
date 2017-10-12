@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: gofunc2
+spec:
+  template:
+    metadata:
+      labels:
+        run-once-daemonset: gofunc2
+    spec:
+      containers:
+      - name: gofunc2
+        image: gcr.io/k8stest-167418/gofunc2:1.0.0
+        command: ["/bin/sh"]
+        args: ["-c","mkdir /var/runtime/func/gofunc2:1.0.0; cp /gofunc2.* /var/runtime/func/gofunc2:1.0.0/.;  tail -f /dev/null"]  
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: functions
+          mountPath: /var/runtime/func
+      volumes:
+      - name: functions
+        hostPath:
+          path: /functions

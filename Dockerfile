@@ -1,5 +1,5 @@
 
-FROM alpine-go:1.9
+FROM gcr.io/k8stest-167418/alpine-go:1.9
 RUN mkdir -p /var/runtime 
 RUN mkdir -p /var/runtime/func 
 ADD bin/serverlessgo /var/runtime/serverlessgo
